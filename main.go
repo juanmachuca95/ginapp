@@ -1,22 +1,37 @@
 package main
 
 import (
+	sqlDB "ginapp/db"
+	"ginapp/handlers"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	db, err := sqlDB.ConexionSql()
+	if err != nil {
+		panic(err)
+	}
+
+	// questions
+	questions := handlers.NewQuestions(db)
+	responses := handlers.NewResponses(db)
 	r := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	r.Use(cors.New(config))
+
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, "👋 Hi! I'm Ginapp")
 	})
 
-	r.GET("welcome", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"ok": "true"})
-	})
+	v1 := r.Group("v1")
+	v1.GET("/question", questions.Get())
+	v1.POST("/response", responses.Save())
 
 	port := os.Getenv("PORT")
 	if port == "" {
