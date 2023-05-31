@@ -1,9 +1,13 @@
 package db
 
-import "database/sql"
+import (
+	"database/sql"
+
+	_ "github.com/mattn/go-sqlite3"
+)
 
 func ConexionSql() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "./db/pwned.db")
+	db, err := sql.Open("sqlite3", "./db/questions.db")
 	if err != nil {
 		return nil, err
 	}

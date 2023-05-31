@@ -19,7 +19,6 @@ func main() {
 
 	// questions
 	questions := handlers.NewQuestions(db)
-	responses := handlers.NewResponses(db)
 	r := gin.Default()
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
@@ -30,8 +29,9 @@ func main() {
 	})
 
 	v1 := r.Group("v1")
-	v1.GET("/question", questions.Get())
-	v1.POST("/response", responses.Save())
+	v1.GET("/questions", questions.Get())
+	v1.POST("/questions", questions.Save())
+	v1.PUT("/questions", questions.Update())
 
 	port := os.Getenv("PORT")
 	if port == "" {
