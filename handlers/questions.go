@@ -70,7 +70,7 @@ func (q Questions) Get() gin.HandlerFunc {
 		var resp QuestionResponse
 		if err := stmt.QueryRowContext(c).Scan(&resp.ID, &resp.Question, &resp.Status); err != nil {
 			if err == sql.ErrNoRows {
-				c.Status(http.StatusOK)
+				c.Status(http.StatusNotFound)
 				return
 			}
 			c.AbortWithError(http.StatusInternalServerError, err)
